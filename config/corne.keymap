@@ -13,6 +13,15 @@
 #define NUM 1
 #define NAV 2
 
+// Macros
+#define U_UNDO  LG(Z)
+#define U_CUT   LG(X)
+#define U_COPY  LG(C)
+#define U_PSTE  LG(V)
+#define U_REDO  LS(LG(Z))
+#define U_CLIP  LC(LG(C))
+#define U_SHOT  LS(LG(N4))
+
 &lt {
   flavor = "tap-preferred";
   tapping-term-ms = <200>;
