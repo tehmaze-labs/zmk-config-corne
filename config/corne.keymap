@@ -7,6 +7,13 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/bt.h>
+#include "../zmk-nodefree-config/helper.h"
+#include "../zmk-nodefree-config/keypos_def/keypos_42keys.h"
+
+// Keys
+#define KEYS_L LT0 LT1 LT2 LT3 LT4 LT5 LM0 LM1 LM2 LM3 LM4 LM5 LB0 LB1 LB2 LB3 LB4 LB5  // left-hand keys
+#define KEYS_R RT0 RT1 RT2 RT3 RT4 RT5 RM0 RM1 RM2 RM3 RM4 RM5 RB0 RB1 RB2 RB3 RB4 RB5  // right-hand keys
+#define THUMBS LH2 LH1 LH0 RH0 RH1 RH2                                                  // thumb keys
 
 // Layers
 #define COL 0
@@ -22,10 +29,42 @@
 #define U_CLIP  LC(LG(C))
 #define U_SHOT  LS(LG(N4))
 
+#define ___ &trans
+
 // Overwrite the display cs pin
 &nice_view_spi {
   cs-gpios = <&pro_micro 0 GPIO_ACTIVE_HIGH>;
 };
+
+// Homerow mods
+ZMK_BEHAVIOR(hm, hold_tap,
+    flavor = "balanced";
+    tapping-term-ms = <280>;
+    quick-tap-ms = <125>;
+    bindings = <&kp>, <&kp>;
+)
+
+ZMK_BEHAVIOR(hml, hold_tap,  // left-hand HRMs
+    flavor = "balanced";
+    tapping-term-ms = <280>;
+    quick-tap-ms = <125>;
+    bindings = <&kp>, <&kp>;
+    hold-trigger-key-positions = <KEYS_R THUMBS>;
+)
+
+ZMK_BEHAVIOR(hmr, hold_tap,  // right-hand HRMs
+    flavor = "balanced";
+    tapping-term-ms = <280>;
+    quick-tap-ms = <125>;
+    bindings = <&kp>, <&kp>;
+    hold-trigger-key-positions = <KEYS_L THUMBS>;
+)
+
+// tap: sticky shift | double tap: capsword
+ZMK_BEHAVIOR(ss_cw, tap_dance,
+    tapping-term-ms = <200>;
+    bindings = <&sk LSHFT>, <&caps_word>;
+)
 
 &lt {
   flavor = "tap-preferred";
@@ -33,47 +72,39 @@
   quick-tap-ms = <0>;
 };
 
-/ {
-  behaviors {
-    hm: homerow_mods {
-      compatible = "zmk,behavior-hold-tap";
-      label = "HOMEROW_MODS";
-      #binding-cells = <2>;
-      tapping-term-ms = <200>;
-      quick_tap_ms = <0>;
-      flavor = "tap-preferred";
-      bindings = <&kp>, <&kp>;
-    };
-  };
+// Keymap
+ZMK_LAYER(default_layer,
+     // ╭────────────┬────────────┬────────────┬────────────┬────────────┬────────────╮   ╭────────────┬────────────┬────────────┬────────────┬────────────┬────────────╮
+              &kp TAB        &kp Q        &kp W        &kp F        &kp P        &kp B     &kp J        &kp L        &kp U        &kp Y        &kp SEMI     &kp BSPC
+     // ├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤   ├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤
+              &kp ESC  &hm LSHFT A  &hm LCTRL R   &hm LALT S   &hm LGUI T        &kp G     &kp M        &hm RGUI N   &hm RALT E   &hm RCTRL I  &hm RSHFT O  &kp SQT
+     // ├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤   ├────────────┼────────────┼────────────┼────────────┼────────────┤────────────┤
+               &ss_cw        &kp Z        &kp X        &kp C        &kp D        &kp V     &kp K        &kp H        &mt COMMA LBKT &mt DOT RBKT &mt SEMI EXCL &kp FSLH
+     // ╰────────────┴────────────┴────────────┼────────────┼────────────┼────────────┤   ├────────────┼────────────┼────────────┼────────────┼────────────┤────────────╯
+                                                     &mo NAV &lt NAV SPACE   &kp LSHFT     &mt BSPC LGUI &lt NUM SPACE &mo NUM
+     //                                        ╰────────────┴────────────┴────────────╯   ╰────────────┴────────────┴────────────╯
+)
 
-  keymap {
-    compatible = "zmk,keymap";
+ZMK_LAYER(nav_layer,
+     // ╭────────────┬────────────┬────────────┬────────────┬────────────┬────────────╮   ╭────────────┬────────────┬────────────┬────────────┬────────────┬────────────╮
+                  ___          ___          ___          ___          ___          ___     &kp PG_UP    &kp HOME     &kp UP       &kp END      &kp INS      &kp C_VOL_UP
+     // ├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤   ├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤
+         &kp C_AL_LOCK &sk   LSHFT &sk    LCTRL &sk     LALT &sk     LGUI          ___     &kp PG_DN    &kp LEFT     &kp DOWN     &kp RIGHT    &kp DEL      &kp C_MUTE
+     // ├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤   ├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤
+                  ___          ___   &kp LG(N1)   &kp LG(N2)   &kp LG(N3)          ___     &kp LC(X)    &kp LC(INS)  &kp LS(INS)  ___          ___          &kp C_VOL_DN
+     // ╰────────────┴────────────┴────────────┼────────────┼────────────┼────────────┤   ├────────────┼────────────┼────────────┼────────────┼────────────┤────────────╯
+                                                         ___          ___          ___     ___          ___          ___
+     //                                        ╰────────────┴────────────┴────────────╯   ╰────────────┴────────────┴────────────╯
+)
 
-    default_layer {
-      bindings = <
-      &kp     TAB &kp       Q &kp       W &kp       F &kp       P &kp       B /**/ &kp J       &kp L         &kp U       &kp Y       &kp SEMI    &kp BSPC
-      &kp     ESC &hm LSHFT A &hm LCTRL R &hm  LALT S &hm  LGUI T &kp       G /**/ &kp M       &hm RGUI N    &hm RALT E  &hm RCTL I  &hm RSHFT O &kp SQT
-      &kp   LSHFT &kp       Z &kp       X &kp       C &kp       D &kp       V /**/ &kp K       &kp H         &kp COMMA   &kp DOT     &kp FSLH    &kp RSHFT
-                                          &mo     NAV &lt NAV RET &kp     TAB /**/ &kp BSPC    &lt NUM SPACE &mo NUM
-      >;
-    };
-
-    num_layer {
-      bindings = <
-      &trans      &kp    EXCL &kp      AT &kp    HASH &kp    DLLR &kp   PRCNT /**/ &kp CARET   &kp AMPS      &kp STAR    &kp LPAR    &kp RPAR    &trans
-      &trans      &kp      N1 &kp      N2 &kp      N3 &kp      N4 &kp      N5 /**/ &kp MINUS   &kp EQUAL     &kp GRAVE   &kp LBKT    &kp RBKT    &kp PIPE
-      &kp   LSHFT &kp      N6 &kp      N7 &kp      N8 &kp      N9 &kp      N0 /**/ &kp UNDER   &kp PLUS      &kp TILDE   &kp LBRC    &kp RBRC    &trans
-                                          &trans      &lt NAV RET &trans      /**/ &trans      &lt COL SPACE &trans
-      >;
-    };
-
-    nav_layer {
-      bindings = <
-      &trans      &kp  LG(N1) &kp  LG(N2) &kp  LG(N3) &kp  LG(N4) &kp  LG(N5) /**/ &kp HOME    &kp PGUP      &kp UP      &kp PGDN    &kp END     &trans
-      &trans      &kp      F1 &kp      F2 &kp      F3 &kp      F4 &kp      F5 /**/ &kp U_SHOT  &kp LEFT      &kp DOWN    &kp RIGHT   &none       &trans 
-      &trans      &kp      F6 &kp      F7 &kp      F8 &kp      F9 &kp     F10 /**/ &kp C_PP    &kp C_PREV    &kp C_VOL_DN &kp C_VOL_UP &kp C_NEXT  &trans
-                                          &trans      &lt COL RET &trans      /**/ &trans      &lt NUM SPACE &trans
-      >;
-    };
-  };  
-};
+ZMK_LAYER(num_layer,
+     // ╭────────────┬────────────┬────────────┬────────────┬────────────┬────────────╮   ╭────────────┬────────────┬────────────┬────────────┬────────────┬────────────╮
+                  ___      &kp TAB &mt N7 AMPS  &mt N8 STAR  &kp N9       &kp STAR         ___          ___          ___          ___          ___          ___
+     // ├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤   ├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤
+                  ___      &kp ESC &mt N4 DLLR  &mt N5 PRCNT &mt N6 CARET &mt PLUS EQUAL   ___          &sk RGUI     &sk LALT     &sk LCTR     &sk LSHFT    ___
+     // ├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤   ├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤
+                  ___      &kp RET &mt N1 EXCL  &mt N2 AT    &mt N3 HASH      &kp FSLH     ___          ___          &kp LPAR     &kp RPAR     ___          ___
+     // ╰────────────┴────────────┴────────────┼────────────┼────────────┼────────────┤   ├────────────┼────────────┼────────────┼────────────┼────────────┤────────────╯
+                                                     &kp DOT       &kp N0    &kp MINUS     ___          ___          ___
+     //                                        ╰────────────┴────────────┴────────────╯   ╰────────────┴────────────┴────────────╯
+)
