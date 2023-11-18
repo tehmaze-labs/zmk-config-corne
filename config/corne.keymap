@@ -44,23 +44,7 @@ ZMK_BEHAVIOR(hm, hold_tap,
     bindings = <&kp>, <&kp>;
 )
 
-ZMK_BEHAVIOR(hml, hold_tap,  // left-hand HRMs
-    flavor = "balanced";
-    tapping-term-ms = <280>;
-    quick-tap-ms = <125>;
-    bindings = <&kp>, <&kp>;
-    hold-trigger-key-positions = <KEYS_R THUMBS>;
-)
-
-ZMK_BEHAVIOR(hmr, hold_tap,  // right-hand HRMs
-    flavor = "balanced";
-    tapping-term-ms = <280>;
-    quick-tap-ms = <125>;
-    bindings = <&kp>, <&kp>;
-    hold-trigger-key-positions = <KEYS_L THUMBS>;
-)
-
-// tap: sticky shift | double tap: capsword
+// Tap: sticky shift | double tap: capsword
 ZMK_BEHAVIOR(ss_cw, tap_dance,
     tapping-term-ms = <200>;
     bindings = <&sk LSHFT>, <&caps_word>;
@@ -76,7 +60,7 @@ ZMK_BEHAVIOR(ss_cw, tap_dance,
 ZMK_UNICODE_SINGLE(euro_sign, N2, N0, A, C)  // €
 
 // Keymap
-ZMK_LAYER(default_layer,
+ZMK_LAYER(default,
      // ╭────────────┬────────────┬────────────┬────────────┬────────────┬────────────╮   ╭────────────┬────────────┬────────────┬────────────┬────────────┬────────────╮
               &kp TAB        &kp Q        &kp W        &kp F        &kp P        &kp B     &kp J        &kp L        &kp U        &kp Y        &kp SEMI     &kp BSPC
      // ├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤   ├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤
@@ -88,7 +72,7 @@ ZMK_LAYER(default_layer,
      //                                        ╰────────────┴────────────┴────────────╯   ╰────────────┴────────────┴────────────╯
 )
 
-ZMK_LAYER(nav_layer,
+ZMK_LAYER(nav,
      // ╭────────────┬────────────┬────────────┬────────────┬────────────┬────────────╮   ╭────────────┬────────────┬────────────┬────────────┬────────────┬────────────╮
                   ___          ___          ___          ___          ___          ___     &kp PG_UP    &kp HOME     &kp UP       &kp END      &kp INS      &kp C_VOL_UP
      // ├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤   ├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤
@@ -100,7 +84,7 @@ ZMK_LAYER(nav_layer,
      //                                        ╰────────────┴────────────┴────────────╯   ╰────────────┴────────────┴────────────╯
 )
 
-ZMK_LAYER(num_layer,
+ZMK_LAYER(num,
      // ╭────────────┬────────────┬────────────┬────────────┬────────────┬────────────╮   ╭────────────┬────────────┬────────────┬────────────┬────────────┬────────────╮
                   ___      &kp TAB &mt N7 AMPS  &mt N8 STAR  &kp N9       &kp STAR         ___          ___          ___          ___          ___          ___
      // ├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤   ├────────────┼────────────┼────────────┼────────────┼────────────┼────────────┤
