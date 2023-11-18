@@ -22,6 +22,10 @@
 #define U_CLIP  LC(LG(C))
 #define U_SHOT  LS(LG(N4))
 
+nice_view_spi: &spi0 {
+  cs-gpios = <&pro_micro 2 GPIO_ACTIVE_HIGH>;
+};
+
 &lt {
   flavor = "tap-preferred";
   tapping-term-ms = <200>;
